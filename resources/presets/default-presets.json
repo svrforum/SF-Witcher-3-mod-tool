@@ -1,74 +1,211 @@
 [
   {
-    "id": "builtin_graphics",
-    "name": "Graphics Enhancement Pack",
-    "description": "A curated set of visual mods for the best-looking Witcher 3 experience. Includes HD textures, lighting overhaul, and weather improvements.",
+    "id": "builtin_essential",
+    "name": "Essential Mods",
+    "nameKo": "필수 모드",
+    "description": "Must-have mods for the best Witcher 3 experience.",
+    "descriptionKo": "위쳐3 플레이 시 필수 추천 모드",
     "mods": [
       {
-        "name": "HD Reworked Project",
-        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/1021",
+        "name": "Set Weight Limit (NEXT GEN)",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/10196",
         "loadOrder": 0,
-        "notes": "Core HD texture replacement"
+        "notes": "무게 제한 자유롭게 설정",
+        "needsMerge": false
       },
       {
-        "name": "Wiedzmin Lighting Mod",
-        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/2358",
+        "name": "Fast Travel From Anywhere (Next-Gen)",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/7157",
         "loadOrder": 1,
-        "notes": "Realistic lighting and atmosphere"
+        "notes": "어디서든 빠른 이동",
+        "needsMerge": true
       },
       {
-        "name": "Beautiful Grass Mod",
-        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/2686",
+        "name": "AutoLoot All-in-One NG Update",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/7198",
         "loadOrder": 2,
-        "notes": "Enhanced vegetation"
-      }
-    ],
-    "createdAt": "2025-01-01T00:00:00.000Z",
-    "isBuiltIn": true
-  },
-  {
-    "id": "builtin_qol",
-    "name": "Quality of Life Essentials",
-    "description": "Must-have mods that improve the UI, inventory management, and general gameplay convenience without changing core mechanics.",
-    "mods": [
-      {
-        "name": "Friendly HUD",
-        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/365",
-        "loadOrder": 0,
-        "notes": "Customizable HUD with immersive options"
+        "notes": "자동 루팅",
+        "needsMerge": true
       },
       {
-        "name": "All Quest Objectives on Map",
+        "name": "All Quest Objectives On Map",
         "nexusUrl": "https://www.nexusmods.com/witcher3/mods/943",
-        "loadOrder": 1,
-        "notes": "Shows all quest objectives simultaneously"
+        "loadOrder": 3,
+        "notes": "모든 퀘스트 목표 지도에 표시",
+        "needsMerge": true
       },
       {
-        "name": "Auto Apply Oils",
-        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/625",
-        "loadOrder": 2,
-        "notes": "Automatically applies the correct oil for each enemy"
+        "name": "Always Full Exp (NEXT GEN)",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/8681",
+        "loadOrder": 4,
+        "notes": "레벨과 관계없이 풀 경험치",
+        "needsMerge": false
+      },
+      {
+        "name": "More Money For Traders (Next-Gen)",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/819",
+        "loadOrder": 5,
+        "notes": "상인 보유 골드 증가",
+        "needsMerge": false
+      },
+      {
+        "name": "Brothers in Arms - Bug Fix and Restored Content (Next-Gen)",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/7329",
+        "loadOrder": 6,
+        "notes": "5,900+ 버그 수정 및 복원 콘텐츠 (강력 추천)",
+        "needsMerge": true
       }
     ],
     "createdAt": "2025-01-01T00:00:00.000Z",
     "isBuiltIn": true
   },
   {
-    "id": "builtin_combat",
-    "name": "Combat Overhaul",
-    "description": "Mods that enhance combat mechanics for a more challenging and rewarding experience. Recommended for experienced players.",
+    "id": "builtin_graphics",
+    "name": "Graphics Enhancement",
+    "nameKo": "그래픽 개선",
+    "description": "Visual mods for a stunning Witcher 3.",
+    "descriptionKo": "위쳐3 비주얼을 극대화하는 모드",
     "mods": [
+      {
+        "name": "HD Reworked Project NextGen Edition",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/9963",
+        "loadOrder": 0,
+        "notes": "HD 텍스처 (CDPR 공식 인정 모드)",
+        "needsMerge": false
+      },
+      {
+        "name": "Elysium - Next Gen Grass Overhaul",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/9396",
+        "loadOrder": 1,
+        "notes": "잔디/풀 그래픽 대폭 개선",
+        "needsMerge": false
+      },
+      {
+        "name": "True Rain",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/11603",
+        "loadOrder": 2,
+        "notes": "실시간 굴절 기반 비 효과 (DX12 전용)",
+        "needsMerge": false
+      },
+      {
+        "name": "Benis Witcher 3 Lighting Overhaul",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/11711",
+        "loadOrder": 3,
+        "notes": "조명 전면 개선",
+        "needsMerge": false
+      },
+      {
+        "name": "Immersive Lighting",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/7560",
+        "loadOrder": 4,
+        "notes": "사실적인 조명 (Benis와 택1)",
+        "needsMerge": false
+      }
+    ],
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "isBuiltIn": true
+  },
+  {
+    "id": "builtin_gameplay",
+    "name": "Gameplay Enhancement",
+    "nameKo": "게임플레이 개선",
+    "description": "Mods that enhance combat, skills, and balance.",
+    "descriptionKo": "전투, 스킬, 밸런스 개선 모드",
+    "mods": [
+      {
+        "name": "Perks Always Active - Next-Gen",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/7156",
+        "loadOrder": 0,
+        "notes": "장착 안 한 패시브 스킬도 항상 활성",
+        "needsMerge": false
+      },
+      {
+        "name": "Better Trophies Rebalance - NEXT-GEN",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/10201",
+        "loadOrder": 1,
+        "notes": "트로피 효과 더 유용하게 리밸런스",
+        "needsMerge": false
+      },
+      {
+        "name": "Friendly Wolves (Next-Gen)",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/7559",
+        "loadOrder": 2,
+        "notes": "늑대가 공격하지 않음",
+        "needsMerge": false
+      },
       {
         "name": "Ghost Mode",
         "nexusUrl": "https://www.nexusmods.com/witcher3/mods/992",
-        "loadOrder": 0,
-        "notes": "Comprehensive gameplay rebalance"
+        "loadOrder": 3,
+        "notes": "전투/경제/스킬 종합 리밸런스 (고급)",
+        "needsMerge": true
       },
       {
-        "name": "Preparations Mod",
-        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/2071",
+        "name": "Increased Creature Loot (Next-Gen)",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/8440",
+        "loadOrder": 4,
+        "notes": "몬스터 전리품 증가",
+        "needsMerge": false
+      },
+      {
+        "name": "Auto Apply Oils (Next-Gen)",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/625",
+        "loadOrder": 5,
+        "notes": "적에 맞는 오일 자동 적용",
+        "needsMerge": true
+      }
+    ],
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "isBuiltIn": true
+  },
+  {
+    "id": "builtin_convenience",
+    "name": "Convenience & UI",
+    "nameKo": "편의성 & UI",
+    "description": "Small but impactful quality-of-life improvements.",
+    "descriptionKo": "소소하지만 확실한 편의성 개선",
+    "mods": [
+      {
+        "name": "No Fall Damage (Next-Gen)",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/7219",
+        "loadOrder": 0,
+        "notes": "낙하 피해 제거",
+        "needsMerge": false
+      },
+      {
+        "name": "Skip Loading Screen Narration",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/7154",
         "loadOrder": 1,
-        "notes": "Makes alchemy preparation matter"
+        "notes": "로딩 나레이션 스킵",
+        "needsMerge": false
+      },
+      {
+        "name": "Disable Witcher Senses Interaction (Candles)",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/8220",
+        "loadOrder": 2,
+        "notes": "촛불 위쳐 감각 비활성화",
+        "needsMerge": false
+      },
+      {
+        "name": "Friendly HUD",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/365",
+        "loadOrder": 3,
+        "notes": "HUD 커스터마이징 (투명도, 자동 숨김)",
+        "needsMerge": true
+      },
+      {
+        "name": "Indestructible Items (Next-Gen v4.04)",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/8211",
+        "loadOrder": 4,
+        "notes": "장비 내구도 무한",
+        "needsMerge": false
+      },
+      {
+        "name": "Next-Gen Indestructible Items",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/7161",
+        "loadOrder": 5,
+        "notes": "장비 파괴 방지 (위 모드와 택1)",
+        "needsMerge": false
       }
     ],
     "createdAt": "2025-01-01T00:00:00.000Z",
