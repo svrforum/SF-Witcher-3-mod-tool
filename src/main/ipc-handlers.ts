@@ -52,41 +52,58 @@ export function registerIpcHandlers(_mainWindow: BrowserWindow): void {
     BrowserWindow.fromWebContents(event.sender)?.close()
   })
 
-  ipcMain.handle('game:detect', async (): Promise<GameInfo | null> => {
-    return detectGame()
-  })
-
-  ipcMain.handle('game:select-manual', async (event): Promise<GameInfo | null> => {
-    const win = BrowserWindow.fromWebContents(event.sender)
-    if (!win) return null
-
-    const result = await dialog.showOpenDialog(win, {
-      title: 'Select Witcher 3 Installation Folder',
-      properties: ['openDirectory']
-    })
-
-    if (result.canceled || result.filePaths.length === 0) return null
-
-    const gamePath = result.filePaths[0]
-    const hasExe =
-      existsSync(join(gamePath, 'bin', 'x64', 'witcher3.exe')) ||
-      existsSync(join(gamePath, 'bin', 'x64_dx12', 'witcher3.exe'))
-
-    if (!hasExe) return null
-
-    return {
-      gamePath,
-      gameVersion: detectGameVersion(gamePath),
-      platform: 'manual'
+  ipcMain.handle('game:detect', async (): Promise<{ success: boolean; data?: GameInfo; error?: string }> => {
+    try {
+      const info = detectGame()
+      return { success: true, data: info ?? undefined }
+    } catch (e) {
+      return { success: false, error: String(e) }
     }
   })
 
-  ipcMain.handle('config:load', async (): Promise<AppConfig> => {
-    return loadConfig()
+  ipcMain.handle('game:select-manual', async (event): Promise<{ success: boolean; data?: GameInfo; error?: string }> => {
+    try {
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) return { success: false, error: 'No window' }
+
+      const result = await dialog.showOpenDialog(win, {
+        title: 'Select Witcher 3 Installation Folder',
+        properties: ['openDirectory']
+      })
+
+      if (result.canceled || result.filePaths.length === 0) return { success: false, error: 'canceled' }
+
+      const gamePath = result.filePaths[0]
+      const hasExe =
+        existsSync(join(gamePath, 'bin', 'x64', 'witcher3.exe')) ||
+        existsSync(join(gamePath, 'bin', 'x64_dx12', 'witcher3.exe'))
+
+      if (!hasExe) return { success: false, error: 'witcher3.exe not found in selected folder' }
+
+      return {
+        success: true,
+        data: { gamePath, gameVersion: detectGameVersion(gamePath), platform: 'manual' }
+      }
+    } catch (e) {
+      return { success: false, error: String(e) }
+    }
   })
 
-  ipcMain.handle('config:save', async (_event, config: AppConfig): Promise<void> => {
-    saveConfig(config)
+  ipcMain.handle('config:load', async (): Promise<{ success: boolean; data?: AppConfig; error?: string }> => {
+    try {
+      return { success: true, data: loadConfig() }
+    } catch (e) {
+      return { success: false, error: String(e) }
+    }
+  })
+
+  ipcMain.handle('config:save', async (_event, config: AppConfig): Promise<{ success: boolean; error?: string }> => {
+    try {
+      saveConfig(config)
+      return { success: true }
+    } catch (e) {
+      return { success: false, error: String(e) }
+    }
   })
 
   // ─── Mod Handlers ───────────────────────────────────────────────────────
