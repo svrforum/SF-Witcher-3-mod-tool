@@ -3,6 +3,8 @@ import { existsSync } from 'fs'
 import { join } from 'path'
 import { detectGame, detectGameVersion } from './modules/game-detector'
 import type { GameInfo } from './modules/game-detector'
+import { loadConfig, saveConfig } from './modules/config-manager'
+import type { AppConfig } from './modules/config-manager'
 
 export function registerIpcHandlers(_mainWindow: BrowserWindow): void {
   ipcMain.on('window:minimize', (event) => {
@@ -44,5 +46,13 @@ export function registerIpcHandlers(_mainWindow: BrowserWindow): void {
       gameVersion: detectGameVersion(gamePath),
       platform: 'manual'
     }
+  })
+
+  ipcMain.handle('config:load', async (): Promise<AppConfig> => {
+    return loadConfig()
+  })
+
+  ipcMain.handle('config:save', async (_event, config: AppConfig): Promise<void> => {
+    saveConfig(config)
   })
 }
