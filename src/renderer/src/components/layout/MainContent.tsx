@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '../../stores/app-store'
 import SettingsPage from '../settings/SettingsPage'
+import ModList from '../mods/ModList'
 
 function PlaceholderPage({ titleKey }: { titleKey: string }): JSX.Element {
   const { t } = useTranslation()
@@ -16,7 +17,7 @@ export default function MainContent(): JSX.Element {
   const currentPage = useAppStore((s) => s.currentPage)
 
   const pages: Record<string, JSX.Element> = {
-    mods: <PlaceholderPage titleKey="mods" />,
+    mods: <ModList />,
     merger: <PlaceholderPage titleKey="merger" />,
     search: <PlaceholderPage titleKey="search" />,
     presets: <PlaceholderPage titleKey="presets" />,
