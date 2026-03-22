@@ -1,0 +1,77 @@
+[
+  {
+    "id": "builtin_graphics",
+    "name": "Graphics Enhancement Pack",
+    "description": "A curated set of visual mods for the best-looking Witcher 3 experience. Includes HD textures, lighting overhaul, and weather improvements.",
+    "mods": [
+      {
+        "name": "HD Reworked Project",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/1021",
+        "loadOrder": 0,
+        "notes": "Core HD texture replacement"
+      },
+      {
+        "name": "Wiedzmin Lighting Mod",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/2358",
+        "loadOrder": 1,
+        "notes": "Realistic lighting and atmosphere"
+      },
+      {
+        "name": "Beautiful Grass Mod",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/2686",
+        "loadOrder": 2,
+        "notes": "Enhanced vegetation"
+      }
+    ],
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "isBuiltIn": true
+  },
+  {
+    "id": "builtin_qol",
+    "name": "Quality of Life Essentials",
+    "description": "Must-have mods that improve the UI, inventory management, and general gameplay convenience without changing core mechanics.",
+    "mods": [
+      {
+        "name": "Friendly HUD",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/365",
+        "loadOrder": 0,
+        "notes": "Customizable HUD with immersive options"
+      },
+      {
+        "name": "All Quest Objectives on Map",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/943",
+        "loadOrder": 1,
+        "notes": "Shows all quest objectives simultaneously"
+      },
+      {
+        "name": "Auto Apply Oils",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/625",
+        "loadOrder": 2,
+        "notes": "Automatically applies the correct oil for each enemy"
+      }
+    ],
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "isBuiltIn": true
+  },
+  {
+    "id": "builtin_combat",
+    "name": "Combat Overhaul",
+    "description": "Mods that enhance combat mechanics for a more challenging and rewarding experience. Recommended for experienced players.",
+    "mods": [
+      {
+        "name": "Ghost Mode",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/992",
+        "loadOrder": 0,
+        "notes": "Comprehensive gameplay rebalance"
+      },
+      {
+        "name": "Preparations Mod",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/2071",
+        "loadOrder": 1,
+        "notes": "Makes alchemy preparation matter"
+      }
+    ],
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "isBuiltIn": true
+  }
+]
