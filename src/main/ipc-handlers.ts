@@ -15,6 +15,9 @@ import {
 import type { ModEntry } from './modules/mod-manager'
 import { OperationQueue } from './modules/operation-queue'
 import { isWitcherRunning } from './utils/process-check'
+import { detectConflicts, mergeScripts } from './modules/script-merger'
+import type { ScriptConflict, MergeResult } from './modules/script-merger'
+import { readVanillaScript } from './modules/bundle-parser'
 
 let modDb: ModDatabase | null = null
 const modQueue = new OperationQueue()
@@ -211,6 +214,104 @@ export function registerIpcHandlers(_mainWindow: BrowserWindow): void {
 
         db.updateAll(updatedMods)
         return { success: true, data: db.getAll() }
+      } catch (e) {
+        return { success: false, error: String(e) }
+      }
+    }
+  )
+
+  // ─── Merger Handlers ────────────────────────────────────────────────────────
+
+  ipcMain.handle(
+    'merger:detect-conflicts',
+    async (): Promise<{ success: boolean; data?: ScriptConflict[]; error?: string }> => {
+      try {
+        const config = loadConfig()
+        if (!config.gamePath) return { success: true, data: [] }
+
+        const db = getModDatabase(config.gamePath)
+        const mods = db.getAll().filter((m) => m.enabled)
+        const conflicts = detectConflicts(mods)
+        return { success: true, data: conflicts }
+      } catch (e) {
+        return { success: false, error: String(e) }
+      }
+    }
+  )
+
+  ipcMain.handle(
+    'merger:merge-scripts',
+    async (
+      _event,
+      vanilla: string,
+      modA: string,
+      modB: string
+    ): Promise<{ success: boolean; data?: MergeResult; error?: string }> => {
+      try {
+        const result = mergeScripts(vanilla, modA, modB)
+        return { success: true, data: result }
+      } catch (e) {
+        return { success: false, error: String(e) }
+      }
+    }
+  )
+
+  ipcMain.handle(
+    'merger:merge-all',
+    async (): Promise<{ success: boolean; data?: ScriptConflict[]; error?: string }> => {
+      try {
+        const config = loadConfig()
+        if (!config.gamePath) return { success: false, error: 'Game path not configured' }
+
+        const db = getModDatabase(config.gamePath)
+        const mods = db.getAll().filter((m) => m.enabled)
+        const conflicts = detectConflicts(mods)
+        const modsDir = getModsDir(config.gamePath)
+        const results: ScriptConflict[] = []
+
+        for (const conflict of conflicts) {
+          if (conflict.involvedMods.length < 2) continue
+
+          // Read vanilla script
+          const vanillaContent = readVanillaScript(config.gamePath, conflict.scriptPath)
+          if (!vanillaContent) {
+            results.push({ ...conflict, status: 'unresolved' })
+            continue
+          }
+
+          // Read mod scripts - try to find the script in each mod's folder
+          const modContents: string[] = []
+          for (const modId of conflict.involvedMods) {
+            const modScriptPath = join(modsDir, modId, 'content', 'scripts', conflict.scriptPath)
+            try {
+              const { readFileSync } = await import('fs')
+              const content = readFileSync(modScriptPath, 'utf-8')
+              modContents.push(content)
+            } catch {
+              modContents.push(vanillaContent) // fallback to vanilla if can't read
+            }
+          }
+
+          // Merge pairwise
+          let currentMerged = modContents[0]
+          let allSuccess = true
+          for (let i = 1; i < modContents.length; i++) {
+            const mergeResult = mergeScripts(vanillaContent, currentMerged, modContents[i])
+            if (mergeResult.merged) {
+              currentMerged = mergeResult.merged
+            }
+            if (!mergeResult.success) {
+              allSuccess = false
+            }
+          }
+
+          results.push({
+            ...conflict,
+            status: allSuccess ? 'auto_merged' : 'unresolved',
+          })
+        }
+
+        return { success: true, data: results }
       } catch (e) {
         return { success: false, error: String(e) }
       }
