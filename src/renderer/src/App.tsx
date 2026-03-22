@@ -5,6 +5,7 @@ import Sidebar from './components/layout/Sidebar'
 import MainContent from './components/layout/MainContent'
 import { ToastContainer } from './components/layout/Toast'
 import SetupWizard from './components/setup/SetupWizard'
+import i18n from './i18n'
 
 function App(): JSX.Element {
   const config = useAppStore((s) => s.config)
@@ -17,7 +18,11 @@ function App(): JSX.Element {
       try {
         const result = await window.api.invoke('config:load')
         if (result.success && result.data) {
-          setConfig(result.data as ReturnType<typeof useAppStore.getState>['config'] & object)
+          const loadedConfig = result.data as ReturnType<typeof useAppStore.getState>['config'] & object
+          setConfig(loadedConfig)
+          if (loadedConfig.language) {
+            i18n.changeLanguage(loadedConfig.language)
+          }
         }
       } catch {
         // Config not found — first launch

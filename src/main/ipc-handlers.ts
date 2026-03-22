@@ -365,6 +365,14 @@ export function registerIpcHandlers(_mainWindow: BrowserWindow): void {
     }
   )
 
+  // ─── Shell Handlers ──────────────────────────────────────────────────────
+
+  ipcMain.handle('shell:open-logs', async () => {
+    const logsDir = join(app.getPath('userData'), 'logs')
+    shell.openPath(logsDir)
+    return { success: true }
+  })
+
   // ─── Preset Handlers ─────────────────────────────────────────────────────
 
   const presetStore = new PresetStore(
