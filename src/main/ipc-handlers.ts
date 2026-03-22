@@ -1,4 +1,4 @@
-import { ipcMain, BrowserWindow, dialog } from 'electron'
+import { ipcMain, BrowserWindow, dialog, shell, app } from 'electron'
 import { existsSync, mkdirSync } from 'fs'
 import { join } from 'path'
 import { detectGame, detectGameVersion } from './modules/game-detector'
@@ -18,6 +18,10 @@ import { isWitcherRunning } from './utils/process-check'
 import { detectConflicts, mergeScripts } from './modules/script-merger'
 import type { ScriptConflict, MergeResult } from './modules/script-merger'
 import { readVanillaScript } from './modules/bundle-parser'
+import { searchMods, getModInfo, buildModPageUrl } from './modules/nexus-client'
+import type { NexusSearchResult, NexusModInfo } from './modules/nexus-client'
+import { PresetStore } from './modules/preset-manager'
+import type { Preset } from './modules/preset-manager'
 
 let modDb: ModDatabase | null = null
 const modQueue = new OperationQueue()
@@ -312,6 +316,119 @@ export function registerIpcHandlers(_mainWindow: BrowserWindow): void {
         }
 
         return { success: true, data: results }
+      } catch (e) {
+        return { success: false, error: String(e) }
+      }
+    }
+  )
+
+  // ─── Nexus Handlers ──────────────────────────────────────────────────────
+
+  ipcMain.handle(
+    'nexus:search',
+    async (_event, query: string): Promise<{ success: boolean; data?: NexusSearchResult[]; error?: string }> => {
+      try {
+        const config = loadConfig()
+        if (!config.nexusApiKey) return { success: false, error: 'No API key configured' }
+        const results = await searchMods(query, config.nexusApiKey)
+        return { success: true, data: results }
+      } catch (e) {
+        return { success: false, error: String(e) }
+      }
+    }
+  )
+
+  ipcMain.handle(
+    'nexus:mod-info',
+    async (_event, modId: number): Promise<{ success: boolean; data?: NexusModInfo; error?: string }> => {
+      try {
+        const config = loadConfig()
+        if (!config.nexusApiKey) return { success: false, error: 'No API key configured' }
+        const info = await getModInfo(modId, config.nexusApiKey)
+        return { success: true, data: info }
+      } catch (e) {
+        return { success: false, error: String(e) }
+      }
+    }
+  )
+
+  ipcMain.handle(
+    'nexus:open-page',
+    async (_event, modId: number): Promise<{ success: boolean; error?: string }> => {
+      try {
+        const url = buildModPageUrl(modId)
+        await shell.openExternal(url)
+        return { success: true }
+      } catch (e) {
+        return { success: false, error: String(e) }
+      }
+    }
+  )
+
+  // ─── Preset Handlers ─────────────────────────────────────────────────────
+
+  const presetStore = new PresetStore(
+    join(app.getPath('userData'), 'presets'),
+    join(__dirname, '../../resources/presets/default-presets.json')
+  )
+
+  ipcMain.handle(
+    'presets:list',
+    async (): Promise<{ success: boolean; data?: Preset[]; error?: string }> => {
+      try {
+        const presets = presetStore.getAll()
+        return { success: true, data: presets }
+      } catch (e) {
+        return { success: false, error: String(e) }
+      }
+    }
+  )
+
+  ipcMain.handle(
+    'presets:create',
+    async (
+      _event,
+      data: { name: string; description: string; mods: Preset['mods'] }
+    ): Promise<{ success: boolean; data?: Preset; error?: string }> => {
+      try {
+        const preset = presetStore.create(data)
+        return { success: true, data: preset }
+      } catch (e) {
+        return { success: false, error: String(e) }
+      }
+    }
+  )
+
+  ipcMain.handle(
+    'presets:remove',
+    async (_event, id: string): Promise<{ success: boolean; error?: string }> => {
+      try {
+        presetStore.remove(id)
+        return { success: true }
+      } catch (e) {
+        return { success: false, error: String(e) }
+      }
+    }
+  )
+
+  ipcMain.handle(
+    'presets:export',
+    async (_event, id: string): Promise<{ success: boolean; data?: string; error?: string }> => {
+      try {
+        const json = presetStore.export(id)
+        return { success: true, data: json }
+      } catch (e) {
+        return { success: false, error: String(e) }
+      }
+    }
+  )
+
+  ipcMain.handle(
+    'presets:import',
+    async (_event, jsonString: string): Promise<{ success: boolean; data?: Preset; error?: string }> => {
+      try {
+        const preset = presetStore.import(jsonString)
+        return { success: true, data: preset }
       } catch (e) {
         return { success: false, error: String(e) }
       }
