@@ -10,6 +10,7 @@ export interface InstalledMod {
   loadOrder: number
   installedAt: string
   modifiedScripts: string[]
+  extraFiles?: string[]
 }
 
 interface ModState {

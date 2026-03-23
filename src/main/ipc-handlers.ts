@@ -164,6 +164,7 @@ export function registerIpcHandlers(_mainWindow: BrowserWindow): void {
         loadOrder: db.getAll().length,
         installedAt: new Date().toISOString(),
         modifiedScripts: installResult.scripts,
+        extraFiles: installResult.extraFiles,
       }
 
       db.add(modEntry)
@@ -183,7 +184,7 @@ export function registerIpcHandlers(_mainWindow: BrowserWindow): void {
       const mod = db.getById(modId)
       if (!mod) return { success: false, error: 'Mod not found' }
 
-      removeMod(modsDir, mod.id)
+      removeMod(modsDir, mod.id, config.gamePath, mod.extraFiles)
       db.remove(modId)
       return { success: true }
     } catch (e) {

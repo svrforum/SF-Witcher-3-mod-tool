@@ -21,6 +21,7 @@ export interface ModEntry {
   loadOrder: number
   installedAt: string
   modifiedScripts: string[]
+  extraFiles?: string[]  // files copied outside Mods/ (e.g., bin/config/..., dlc/...)
 }
 
 // ─── ModDatabase ────────────────────────────────────────────────────────────
@@ -219,6 +220,24 @@ function findGameRootFolders(extractedDir: string): string[] {
 export interface InstallResult {
   folderName: string
   scripts: string[]
+  extraFiles: string[]  // files copied to game root (relative paths from gamePath)
+}
+
+/**
+ * Recursively list all files in a directory, returning paths relative to baseDir.
+ */
+function listFilesRecursive(dir: string, baseDir: string): string[] {
+  const results: string[] = []
+  if (!existsSync(dir)) return results
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name)
+    if (entry.isDirectory()) {
+      results.push(...listFilesRecursive(full, baseDir))
+    } else {
+      results.push(relative(baseDir, full).replace(/\\/g, '/'))
+    }
+  }
+  return results
 }
 
 export async function installMod(archivePath: string, modsDir: string, gamePath?: string): Promise<InstallResult> {
@@ -237,6 +256,7 @@ export async function installMod(archivePath: string, modsDir: string, gamePath?
     // Install each mod folder
     let primaryFolder = ''
     const allScripts: string[] = []
+    const extraFiles: string[] = []
 
     for (const modFolder of modFolders) {
       const folderName = basename(modFolder)
@@ -252,17 +272,33 @@ export async function installMod(archivePath: string, modsDir: string, gamePath?
       allScripts.push(...scanModScripts(destPath))
     }
 
-    // Copy game-root folders (bin/, dlc/) to game directory
+    // Copy game-root folders (bin/, dlc/) and track all copied files
+    // Back up existing files before overwriting
     if (gamePath) {
+      const backupDir = join(modsDir, `__backups_${primaryFolder}`)
       const gameRootFolders = findGameRootFolders(tempDir)
       for (const folder of gameRootFolders) {
         const folderName = basename(folder)
+        const files = listFilesRecursive(folder, folder)
+        for (const f of files) {
+          const relPath = join(folderName, f).replace(/\\/g, '/')
+          extraFiles.push(relPath)
+
+          // Back up original game file if it exists
+          const destFile = join(gamePath, relPath)
+          if (existsSync(destFile)) {
+            const backupPath = join(backupDir, relPath)
+            const backupParent = join(backupPath, '..')
+            if (!existsSync(backupParent)) mkdirSync(backupParent, { recursive: true })
+            cpSync(destFile, backupPath)
+          }
+        }
         const destPath = join(gamePath, folderName)
         cpSync(folder, destPath, { recursive: true })
       }
     }
 
-    return { folderName: primaryFolder, scripts: allScripts }
+    return { folderName: primaryFolder, scripts: allScripts, extraFiles }
   } catch (err) {
     throw err
   } finally {
@@ -274,10 +310,60 @@ export async function installMod(archivePath: string, modsDir: string, gamePath?
 
 // ─── removeMod ──────────────────────────────────────────────────────────────
 
-export function removeMod(modsDir: string, folderName: string): void {
+export function removeMod(modsDir: string, folderName: string, gamePath?: string, extraFiles?: string[]): void {
+  // Remove mod folder from Mods/
   const modPath = join(modsDir, folderName)
   if (existsSync(modPath)) {
     rmSync(modPath, { recursive: true, force: true })
+  }
+
+  // Remove extra files copied to game root (bin/, dlc/ etc.)
+  if (gamePath && extraFiles && extraFiles.length > 0) {
+    const { resolve } = require('path')
+    const resolvedGamePath = resolve(gamePath)
+    const backupDir = join(modsDir, `__backups_${folderName}`)
+
+    for (const relPath of extraFiles) {
+      const fullPath = join(gamePath, relPath)
+
+      // Safety: ensure path is inside gamePath (prevent path traversal)
+      if (!resolve(fullPath).startsWith(resolvedGamePath)) continue
+
+      if (existsSync(fullPath)) {
+        rmSync(fullPath, { force: true })
+      }
+
+      // Restore backup if available
+      const backupPath = join(backupDir, relPath)
+      if (existsSync(backupPath)) {
+        const destParent = join(fullPath, '..')
+        if (!existsSync(destParent)) mkdirSync(destParent, { recursive: true })
+        cpSync(backupPath, fullPath)
+      }
+
+      // Clean up empty parent directories (up to the game root folder like bin/, dlc/)
+      let dir = join(fullPath, '..')
+      const rootFolder = relPath.split('/')[0] // e.g., 'bin'
+      const stopAt = resolve(join(gamePath, rootFolder))
+      while (resolve(dir) !== stopAt && resolve(dir).startsWith(stopAt)) {
+        try {
+          const entries = readdirSync(dir)
+          if (entries.length === 0) {
+            rmSync(dir)
+            dir = join(dir, '..')
+          } else {
+            break
+          }
+        } catch {
+          break
+        }
+      }
+    }
+
+    // Clean up backup directory
+    if (existsSync(backupDir)) {
+      rmSync(backupDir, { recursive: true, force: true })
+    }
   }
 }
 
