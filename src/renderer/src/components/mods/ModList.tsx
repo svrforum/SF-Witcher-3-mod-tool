@@ -31,7 +31,7 @@ interface ContextMenuState {
 }
 
 export default function ModList(): JSX.Element {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { invoke } = useIpc()
   const mods = useModStore((s) => s.mods)
   const setMods = useModStore((s) => s.setMods)
@@ -92,6 +92,15 @@ export default function ModList(): JSX.Element {
   }
 
   async function handleDelete(id: string): Promise<void> {
+    const mod = mods.find((m) => m.id === id)
+    const modName = mod?.name || id
+    const confirmed = window.confirm(
+      i18n.language === 'ko'
+        ? `"${modName}" 모드를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`
+        : `Delete "${modName}"?\nThis action cannot be undone.`
+    )
+    if (!confirmed) return
+
     try {
       await invoke('mods:remove', id)
       await loadMods()
@@ -180,7 +189,7 @@ export default function ModList(): JSX.Element {
             type="text"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            placeholder={t('search.placeholder')}
+            placeholder={i18n.language === 'ko' ? '설치된 모드 검색...' : 'Search installed mods...'}
             className="w-full bg-witcher-card/50 border border-witcher-border/50 rounded-xl px-4 py-2.5 text-sm text-witcher-text placeholder:text-witcher-text-muted/40 transition-smooth"
           />
         </div>
