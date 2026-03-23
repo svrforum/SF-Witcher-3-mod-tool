@@ -170,6 +170,7 @@ export default function ModList(): JSX.Element {
                     key={mod.id}
                     mod={mod}
                     onToggle={handleToggle}
+                    onDelete={handleDelete}
                     onContextMenu={handleContextMenu}
                   />
                 ))}

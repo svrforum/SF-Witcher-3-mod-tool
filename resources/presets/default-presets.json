@@ -7,10 +7,10 @@
     "descriptionKo": "위쳐3 플레이 시 필수 추천 모드",
     "mods": [
       {
-        "name": "Set Weight Limit (NEXT GEN)",
-        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/10196",
+        "name": "Over 9000 - Weight Limit Mod",
+        "nexusUrl": "https://www.nexusmods.com/witcher3/mods/3",
         "loadOrder": 0,
-        "notes": "무게 제한 자유롭게 설정",
+        "notes": "무게 제한 9000으로 증가 (설정 불필요, 자동 적용)",
         "needsMerge": false
       },
       {

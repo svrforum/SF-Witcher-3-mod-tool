@@ -6,10 +6,11 @@ import type { InstalledMod } from '../../stores/mod-store'
 interface ModCardProps {
   mod: InstalledMod
   onToggle: (id: string, enabled: boolean) => void
+  onDelete: (id: string) => void
   onContextMenu: (e: React.MouseEvent, mod: InstalledMod) => void
 }
 
-export default function ModCard({ mod, onToggle, onContextMenu }: ModCardProps): JSX.Element {
+export default function ModCard({ mod, onToggle, onDelete, onContextMenu }: ModCardProps): JSX.Element {
   const { t } = useTranslation()
   const {
     attributes,
@@ -79,6 +80,18 @@ export default function ModCard({ mod, onToggle, onContextMenu }: ModCardProps):
           &#x26A0;
         </span>
       )}
+
+      {/* Delete button */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation()
+          onDelete(mod.id)
+        }}
+        className="text-witcher-text-muted hover:text-witcher-red opacity-0 group-hover:opacity-100 transition-all shrink-0 px-1"
+        title={t('mods.delete')}
+      >
+        &#x2715;
+      </button>
     </div>
   )
 }
