@@ -32,7 +32,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish release (remove draft)
-        run: gh release edit ${{ github.ref_name }} --draft=false
+      - name: Publish release with notes
+        run: gh release edit ${{ github.ref_name }} --draft=false --generate-notes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
