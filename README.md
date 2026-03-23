@@ -111,7 +111,7 @@ SF-Witcher-3-mod-tool/
 ## 개발 환경 설정
 
 ### 요구 사항
-- Node.js 20+
+- Node.js 24+ (LTS)
 - npm
 
 ### 시작하기
